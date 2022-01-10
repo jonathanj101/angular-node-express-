@@ -33,18 +33,4 @@ mongoose.connection.once("open", () => {
     })
 })
 
-
-// let connectionString = "mongodb://localhost:27017/practing_nodejs"
-
-// mongoose.connect(connectionString)
-//     .then(result => {
-//         const server = http.createServer(app)
-//         server.listen(port, () => {
-//             console.log(`Server listining on port ${port}`)
-//         })
-//         console.log('Connected To Database Successfully!')
-//     }).catch(err => console.log("Error ", err))
-
-
-
 module.exports = app
