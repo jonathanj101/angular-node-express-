@@ -4,31 +4,36 @@ const userServices = require('./userAuthServices')
 const userController = {}
 
 userController.login = async (req, res, next) => {
-    console.log("user controller login")
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
+    console.log("userController.login")
     const username = req.body.username;
-    const password = req.body.password;
+    const password = req.body.password
 
-    if (firstName !== "" && lastName !== "" && username !== "" && password !== "") {
-        console.log("log in worked")
-        return res.status(200).json({
-            msg: "login successful"
-        })
-    } else {
-        return res.status(404).json({
-            msg: "error"
+    try {
+        const user = await userServices.login(username);
+        if (user.authenticate(password)) {
+            return res.status(201).json({
+                msg: "Logged in successfully!"
+            })
+        } else {
+            return res.status(500).json({
+                msg: "Password did not match our records!"
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            msg: "Looks like the information you provided does not match our record! Please try again."
         })
     }
 }
 
 userController.register = async (req, res, next) => {
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
-    const username = req.body.username;
-    const password = req.body.password;
-    if (firstName !== "" && lastName !== "" && username !== "" && password !== "") {
-        console.log("registraion conditionals")
+    console.log("userController.register")
+    try {
+        const firstName = req.body.firstName;
+        const lastName = req.body.lastName;
+        const username = req.body.username;
+        const password = req.body.password;
         const data = {
             firstName: firstName,
             firstName: firstName,
@@ -37,13 +42,13 @@ userController.register = async (req, res, next) => {
             password: password,
         }
         const userModel = await userServices.register(data)
-        console.log("userModel", userModel.toJSON())
         return res.status(200).json({
-            msg: "registration successful"
+            msg: "Registration Successful! " + userModel.username,
         })
-    } else {
-        return res.status(404).json({
-            msg: "error"
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            msg: "duplicate user. Looks like that username is taken!",
         })
     }
 }
